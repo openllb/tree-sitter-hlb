@@ -1,0 +1,21 @@
+import golang from image("openllb/golang.hlb")
+
+fn default() fs {
+	golang.build(src, "binary")
+}
+
+fn src() fs {
+	local(".")
+	mkfile("msg", 0o644, "hello world")
+}
+
+# Some multi-line
+# comments.
+fn nodeModules() (fs output) {
+	image("node:alpine") # inline comments
+	run("npm install") with option {
+		dir("/in")
+		mount(src, "/in")
+		mount(scratch, "/in/node_modules") as output
+	}
+}

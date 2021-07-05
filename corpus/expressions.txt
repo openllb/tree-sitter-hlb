@@ -1,0 +1,113 @@
+============================================
+Call expressions
+============================================
+
+fn default() fs {
+	a(b, c)
+
+	a(
+		b,
+		c,
+	)
+}
+
+---
+
+(source_file
+  (function_declaration (identifier) (parameter_list) (type_identifier) (block
+    (call_expression
+      (identifier)
+      (argument_list (identifier) (identifier)))
+    (call_expression
+      (identifier)
+      (argument_list (identifier) (identifier))))))
+
+============================================
+Nested call expressions
+============================================
+
+fn default() fs {
+	a(b(c(d)))
+}
+
+---
+
+(source_file
+  (function_declaration (identifier) (parameter_list) (type_identifier) (block
+    (call_expression (identifier) (argument_list
+      (call_expression (identifier) (argument_list
+        (call_expression (identifier) (argument_list
+          (identifier))))))))))
+
+============================================
+Call expression clauses
+============================================
+
+fn default() (string output) {
+	a() with option {
+		b()
+	} as output
+}
+
+---
+
+(source_file
+  (function_declaration
+    name: (identifier)
+    parameters: (parameter_list)
+    result: (parameter_list
+      (parameter_declaration
+        type: (type_identifier)
+        name: (identifier)))
+    body: (block
+      (call_expression
+        function: (identifier)
+        arguments: (argument_list)
+        with: (block_literal (option_type) (block
+          (call_expression
+            function: (identifier)
+            arguments: (argument_list))))
+        as: (identifier)))))
+
+============================================
+Parenthesized expressions
+============================================
+
+fn default() fs {
+	a() with (b() as c) as d
+}
+
+---
+
+(source_file
+  (function_declaration
+    name: (identifier)
+    parameters: (parameter_list)
+    result: (type_identifier)
+    body: (block
+      (call_expression
+        function: (identifier)
+        arguments: (argument_list)
+        with: (parenthesized_expression (call_expression
+          function: (identifier)
+          arguments: (argument_list)
+          as: (identifier)) )
+        as: (identifier)))))
+
+============================================
+Selector expressions
+============================================
+
+fn default() fs {
+	a.b.c()
+}
+
+---
+
+(source_file
+  (function_declaration (identifier) (parameter_list) (type_identifier) (block
+    (call_expression
+      (selector_expression
+        (selector_expression (identifier) (identifier))
+        (identifier))
+      (argument_list)))))

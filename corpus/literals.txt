@@ -1,0 +1,76 @@
+============================================
+Block literals
+============================================
+
+fn default() fs {
+	fs { fs { a() } }
+}
+
+---
+
+(source_file
+  (function_declaration (identifier) (parameter_list) (type_identifier) (block
+    (block_literal (type_identifier) (block
+      (block_literal (type_identifier) (block
+        (call_expression (identifier) (argument_list)))))))))
+
+============================================
+String literals
+============================================
+
+fn default() string {
+	`hello`
+
+	"hello \"${name}\""
+}
+
+---
+
+(source_file
+  (function_declaration (identifier) (parameter_list) (type_identifier) (block
+    (raw_string_literal)
+    (interpreted_string_literal
+      (char_fragment)
+      (escaped_fragment)
+      (interpolated_fragment (identifier))
+      (escaped_fragment)))))
+
+============================================
+Integer literals
+============================================
+
+fn default() int {
+	0xdeadbeef
+
+	0o644
+
+	1
+	
+	0b1010
+}
+
+---
+
+(source_file
+  (function_declaration (identifier) (parameter_list) (type_identifier) (block
+    (int_literal)
+    (int_literal)
+    (int_literal)
+    (int_literal))))
+
+============================================
+Boolean literals
+============================================
+
+fn default() bool {
+	true
+
+	false
+}
+
+---
+
+(source_file
+  (function_declaration (identifier) (parameter_list) (type_identifier) (block
+    (true)
+    (false))))

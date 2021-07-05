@@ -1,0 +1,25 @@
+{
+  "name": "tree-sitter-hlb",
+  "version": "1.0.0",
+  "description": "Tree-sitter grammar for hlb",
+  "main": "grammar.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "nan": "^2.14.2"
+  },
+  "devDependencies": {
+    "tree-sitter-cli": "^0.20.0"
+  },
+  "tree-sitter": [
+    {
+      "scope": "source.hlb",
+      "file-types": [
+        "hlb"
+      ]
+    }
+  ]
+}
