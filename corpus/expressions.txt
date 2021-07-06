@@ -43,9 +43,9 @@ fn default() fs {
 Call expression clauses
 ============================================
 
-fn default() (string output) {
+fn default() (string output, int b_num, int b_total) {
 	a() with option {
-		b()
+		b() as (num->b_num, total->b_total)
 	} as output
 }
 
@@ -58,6 +58,12 @@ fn default() (string output) {
     result: (parameter_list
       (parameter_declaration
         type: (type_identifier)
+        name: (identifier))
+      (parameter_declaration
+        type: (type_identifier)
+        name: (identifier))
+      (parameter_declaration
+        type: (type_identifier)
         name: (identifier)))
     body: (block
       (call_expression
@@ -66,7 +72,14 @@ fn default() (string output) {
         with: (block_literal (option_type) (block
           (call_expression
             function: (identifier)
-            arguments: (argument_list))))
+            arguments: (argument_list)
+            as: (bind_list
+              (bind_declaration
+                source: (identifier)
+                target: (identifier))
+              (bind_declaration
+                source: (identifier)
+                target: (identifier))))))
         as: (identifier)))))
 
 ============================================

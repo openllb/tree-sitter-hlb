@@ -57,9 +57,21 @@ module.exports = grammar({
     )),
 
     _declaration: $ => choice(
-      $.function_declaration,
       $.import_declaration,
-      $.export_declaration
+      $.export_declaration,
+      $.function_declaration
+    ),
+
+    import_declaration: $ => seq(
+      'import',
+      $.identifier,
+      'from',
+      $._expression
+    ),
+
+    export_declaration: $ => seq(
+      'export',
+      $.identifier
     ),
 
     function_declaration: $ => seq(
@@ -84,39 +96,6 @@ module.exports = grammar({
       field('name', $.identifier)
     ),
 
-    import_declaration: $ => seq(
-      'import',
-      $.identifier,
-      'from',
-      $._expression
-    ),
-
-    export_declaration: $ => seq(
-      'export',
-      $.identifier
-    ),
-
-    identifier: $ => token(seq(
-      letter,
-      repeat(choice(letter, unicodeDigit))
-    )),
-
-    _type: $ => choice(
-      $._type_identifier,
-      $.option_type
-    ),
-
-    _type_identifier: $ => alias($.identifier, $.type_identifier),
-
-    option_type: $ => seq(
-      'option',
-      field('subtype', optional(seq(
-        '<',
-        $.identifier,
-        '>'
-      )))
-    ),
-
     block: $ => seq(
       '{',
       optional($._statement_list),
@@ -134,21 +113,15 @@ module.exports = grammar({
     ),
 
     _expression: $ => choice(
-      $.block_literal,
       $.selector_expression,
       $.call_expression,
+      $.parenthesized_expression,
       $.identifier,
+      $.block_literal,
       $._string_literal,
       $.int_literal,
       $.true,
-      $.false,
-      $.parenthesized_expression
-    ),
-
-    parenthesized_expression: $ => seq(
-      '(',
-      $._expression,
-      ')'
+      $.false
     ),
 
     selector_expression: $ => prec(2, seq(
@@ -180,7 +153,52 @@ module.exports = grammar({
 
     _as_clause: $ => seq(
       'as',
-      $.identifier
+      choice(
+        $.identifier,
+        $.bind_list
+      )
+    ),
+
+    bind_list: $ => seq(
+      '(',
+      optional(seq(
+        commaSep($.bind_declaration),
+        optional(',')
+      )),
+      ')'
+    ),
+
+    bind_declaration: $ => seq(
+      field('source', $.identifier),
+      '->',
+      field('target', $.identifier)
+    ),
+
+    parenthesized_expression: $ => seq(
+      '(',
+      $._expression,
+      ')'
+    ),
+
+    identifier: $ => token(seq(
+      letter,
+      repeat(choice(letter, unicodeDigit))
+    )),
+
+    _type: $ => choice(
+      $._type_identifier,
+      $.option_type
+    ),
+
+    _type_identifier: $ => alias($.identifier, $.type_identifier),
+
+    option_type: $ => seq(
+      'option',
+      field('subtype', optional(seq(
+        '<',
+        $.identifier,
+        '>'
+      )))
     ),
 
     block_literal: $ => seq(
